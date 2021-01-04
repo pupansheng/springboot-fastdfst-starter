@@ -2,21 +2,30 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.csource</groupId>
-  <artifactId>fastdfs-client-java</artifactId>
+  <groupId>com.pps</groupId>
+  <artifactId>springboot-fastdfs-pps-starter</artifactId>
   <version>1.29-SNAPSHOT</version>
-  <name>fastdfs-client-java</name>
-  <description>fastdfs client for java</description>
+  <name>springboot-fastdfs-pps-starter</name>
+  <description>springboot-fastdfs-pps-starter</description>
   <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.test.failure.ignore>true</maven.test.failure.ignore>
-    <maven.test.skip>true</maven.test.skip>
-    <jdk.version>1.6</jdk.version>
+    <java.version>1.8</java.version>
   </properties>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -30,21 +39,11 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>2.0.4.RELEASE</version>
+    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
