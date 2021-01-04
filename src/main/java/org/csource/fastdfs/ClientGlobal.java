@@ -10,7 +10,7 @@ package org.csource.fastdfs;
 
 import org.csource.common.IniFileReader;
 import org.csource.common.MyException;
-
+import property.FastDfsProperty;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -140,7 +140,59 @@ public class ClientGlobal {
       g_connection_pool_max_wait_time_in_ms = DEFAULT_CONNECTION_POOL_MAX_WAIT_TIME_IN_MS;
     }
   }
+  public static void init(FastDfsProperty fastDnsProperty) throws IOException, MyException {
+    String[] szTrackerServers = new String[0];
+    String[] parts;
+    g_connect_timeout = fastDnsProperty.getOnnect_timeout();
+    if (g_connect_timeout < 0) {
+      g_connect_timeout = DEFAULT_CONNECT_TIMEOUT;
+    }
+    g_connect_timeout *= 1000; //millisecond
 
+    g_network_timeout =fastDnsProperty.getNetwork_timeout();
+    if (g_network_timeout < 0) {
+      g_network_timeout = DEFAULT_NETWORK_TIMEOUT;
+    }
+    g_network_timeout *= 1000; //millisecond
+
+    g_charset = fastDnsProperty.getCharset();
+    if (g_charset == null || g_charset.length() == 0) {
+      g_charset = "ISO8859-1";
+    }
+    String racker_serversT = fastDnsProperty.getRacker_servers();
+    if (racker_serversT==null) {
+      throw new MyException("racker_servers 必须填写");
+    }
+    szTrackerServers =racker_serversT.split(",");
+    InetSocketAddress[] tracker_servers = new InetSocketAddress[szTrackerServers.length];
+    for (int i = 0; i < szTrackerServers.length; i++) {
+      parts = szTrackerServers[i].split("\\:", 2);
+      if (parts.length != 2) {
+        throw new MyException("the value of item \"tracker_server\" is invalid, the correct format is host:port");
+      }
+
+      tracker_servers[i] = new InetSocketAddress(parts[0].trim(), Integer.parseInt(parts[1].trim()));
+    }
+    g_tracker_group = new TrackerGroup(tracker_servers);
+
+    g_tracker_http_port = fastDnsProperty.getTracker_http_port();
+
+    g_anti_steal_token = fastDnsProperty.isAnti_steal_token();
+    if (g_anti_steal_token) {
+      g_secret_key = fastDnsProperty.getSecret_key();
+    }
+    g_connection_pool_enabled = fastDnsProperty.isConnection_pool_enabled();
+    g_connection_pool_max_count_per_entry = fastDnsProperty.getConnection_pool_max_count_per_entry();
+    g_connection_pool_max_idle_time = fastDnsProperty.getConnection_pool_max_idle_time();
+    if (g_connection_pool_max_idle_time < 0) {
+      g_connection_pool_max_idle_time = DEFAULT_CONNECTION_POOL_MAX_IDLE_TIME;
+    }
+    g_connection_pool_max_idle_time *= 1000;
+    g_connection_pool_max_wait_time_in_ms =fastDnsProperty.getConnection_pool_max_wait_time_in_ms();
+    if (g_connection_pool_max_wait_time_in_ms < 0) {
+      g_connection_pool_max_wait_time_in_ms = DEFAULT_CONNECTION_POOL_MAX_WAIT_TIME_IN_MS;
+    }
+  }
   /**
    * load from properties file
    *
